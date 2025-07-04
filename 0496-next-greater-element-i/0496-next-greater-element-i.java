@@ -1,27 +1,33 @@
 class Solution {
     public int[] nextGreaterElement(int[] nums1, int[] nums2) {
-        HashMap<Integer, Integer> nextGreaterMap = new HashMap<>();
+        int[] index = new int[10001];
+        int ans[] = new int [nums1.length];
+        Stack<Integer> st = new Stack<>();
+        int n = nums2.length;
+        int[] nextGreater = new int[n];
 
-        Stack<Integer> stack = new Stack<>();
+        Arrays.fill(nextGreater, -1);
 
-        for(int num:nums2){
-            while(!stack.isEmpty() && stack.peek()<num){
-                nextGreaterMap.put(stack.pop(),num);
+        // Building index[] map
+        for(int i =0;i<n;i++){
+            index[nums2[i]] = i; 
+        }
+
+        // Using stack to fill MONOTONIC nextGreater[]
+
+        for(int i = 0;i<n;i++){
+            while(!st.isEmpty() && nums2[st.peek()] < nums2[i]){
+                nextGreater[st.pop()] = nums2[i];
             }
-
-            stack.push(num);
-        }
-        
-
-        while(!stack.isEmpty()){
-            nextGreaterMap.put(stack.pop(),-1);
+            st.push(i);
         }
 
-        int[] result = new int[nums1.length];
-        for (int i = 0; i < nums1.length; i++) {
-            result[i] = nextGreaterMap.get(nums1[i]);
+        // filling ans[]
+        for(int i =0;i<nums1.length;i++){
+            ans[i] = nextGreater[index[nums1[i]]];
         }
 
-        return result;
+        return ans;
+
     }
 }
